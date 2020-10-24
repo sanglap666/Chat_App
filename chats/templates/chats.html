@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    <title>chats</title>
+    
+{% endblock title %}
+
+{%block content%}
+        
+        <div class="container">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">USERNAME</th>
+                        <th scope="col">CHAT</th>
+                    </tr>
+                </thead>
+                
+                {%for user in connected%}
+                    
+                        
+                    <tbody>
+                            <tr>
+                                <td>{{user.username}}</td>
+                                
+                                <td><a href="{%url 'chatthread' user.username%}">CHAT</a></td>
+                            </tr>
+                            
+                            
+                            
+                        
+                    </tbody>
+                {%endfor%}     
+            </table>
+        </div>
+       
+
+        
+
+{%endblock content%}
+
+    
+
+
+    {%for thread in user_threads1%}
+        {{thread.second}}
+    {%endfor%} 
+    {%for thread in user_threads2%}
+        {{thread.first}}
+          
+    {%endfor%}        

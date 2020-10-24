@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    <title>Sign-In</title>
+{% endblock title %}
+
+{%block content%}
+    
+    {%for msg in messages%}
+        <div class="alert alert-warning alert-dismissible fade show container" role="alert">
+            <strong>{{msg}}</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {%endfor%}
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            {{form | crispy}}
+            <button type="submit" class="btn btn-success">SIGN-IN</button>
+        </form>   
+    </div>     
+{%endblock%}    

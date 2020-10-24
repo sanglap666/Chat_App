@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    <title>chats</title>
+{% endblock title %}
+
+{%block content%}
+    
+    <div class="container">
+        <h2>CHATTING WITH <strong>{{username}}</strong></h2> 
+        </br>
+        <p>PREVIOUS CHATS</p>
+        {%for chat in all_messages%}
+            <ul>
+                <li>{{chat.message}} via {{chat.user}}</li>
+            </ul>    
+        {%endfor%} 
+           
+        <p>CURRENT CHATS</p>
+        <ul id='chat-items'>
+            
+        </ul>
+        
+        </br>
+    
+        
+        <form id="form" method="POST">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <button type="submit" class="btn btn-success">SEND</button>
+        </form>
+    </div>
+    
+{%endblock content%}
+
+{%block script%}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+    <script>
+        var loc = window.location
+        console.log(window.location)
+        var endpoint ="ws://" + loc.host + loc.pathname
+        var formdata = $("#form")
+        var msgdata=$("#id_message")
+        var chatholder = $("#chat-items")
+
+        var socket = new ReconnectingWebSocket(endpoint)
+
+        
+        socket.onmessage=function(e){
+            console.log("message",e)
+            var msgdata = JSON.parse(e.data)
+            chatholder.append("<li>"+msgdata.message+" via "+msgdata.username+"</li>")
+
+        }
+        socket.onclose=function(e){
+            console.log("close",e)
+        }
+        socket.onerror=function(e){
+            console.log("error",e)
+        }
+        socket.onopen=function(e){
+            console.log("open",e)
+            formdata.submit(function(event){
+                
+                msgtext = msgdata.val()
+                event.preventDefault()
+                var finaldata = {
+                'message' : msgtext
+                }
+                socket.send(JSON.stringify(finaldata))
+                msgdata.val('')
+            })
+        }
+
+    </script>    
+{%endblock script%}    
